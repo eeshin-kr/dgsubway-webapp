@@ -29,7 +29,9 @@ function success(position) {
 
     getDistanceFromStations();
     printNearestStation();
-    statustext.innerHTML = "가장 가까운 역: " + nearestStation
+    statustext.innerHTML = "가장 가까운 역: " + nearestStation;
+    generateTable();
+    
     
 }
 
@@ -74,9 +76,10 @@ function printNearestStation(){
     getTimetable(nearestStation);
 }
 
-function changeStation(obj){
+function changeStationSelectionBox(obj){
     document.getElementById("staction-select").value = obj.innerHTML;
     getTimetable(obj.innerHTML);
+
 }
 
 function changeDay(){
@@ -179,13 +182,13 @@ function getTimetable(value){
     downtrainForm.innerHTML = tempstr;
 }
 
-function refresh(){
+function refreshTimeTable(){
     getTimetable(document.getElementById("staction-select").value);
 }
 
 function autoRefresh(){
     if (document.getElementById("autorefresh").checked){
-        timer = setInterval(refresh, refreshInterval);
+        timer = setInterval(refreshTimeTable, refreshInterval);
     }
     else{
         clearInterval(timer);
@@ -201,4 +204,77 @@ function toleftSeconds(time){
     return time >0 ? time - Math.floor( time / 60) * 60 : time;
 }
 
+
+function getIntervaltimeList(){
+    const regex = /\(.*\)/i;
+    const filtteredtext = document.getElementById("staction-select").value.replace(regex, "");
+    let centerStation = filtteredtext;
+    let stationArray = Object.keys(line2intervaltime);
+    let timeArray = Object.values(line2intervaltime).map(function(el){
+        return Number(el.split(":")[1]) * 60 + Number(el.split(":")[2]);
+        }
+    );
+    let tempList = {};
+    
+    for (let i=0; i<stationArray.length; i++){
+        tempList[stationArray[i]] = Math.abs(timeArray[stationArray.indexOf(centerStation)] - timeArray[i]);
+        
+/*         tempList[stationArray[i]] = 0;
+
+        if (i < stationArray.indexOf(centerStation)){
+            for (let j=i+1; j <= stationArray.indexOf(centerStation); j++ ){
+                tempList[stationArray[i]] = tempList[stationArray[i]] + timeArray[j];
+            }
+        } else if(i > stationArray.indexOf(centerStation)) {
+            for (let j=stationArray.indexOf(centerStation)+1; j <= i; j++ ){
+                tempList[stationArray[i]] = tempList[stationArray[i]] + timeArray[j];
+            }
+
+        } */
+
+    }
+
+    return tempList;
+}
+
+
+function generateTableHead(){
+    let thead = document.getElementById("time_between_station").createTHead();
+    let row = thead.insertRow();
+    let intervalTimeList = getIntervaltimeList();
+    
+    for (let key of Object.keys(intervalTimeList) ){
+        let th = document.createElement("th");
+        let text = document.createTextNode(key);
+        th.appendChild(text);
+        row.appendChild(th);
+    }
+}
+
+function generateTable(){
+    let table = document.getElementById("time_between_station");
+    let intervalTimeList = getIntervaltimeList();
+    table.innerHTML = "";
+    
+    let row = table.insertRow();
+    for (let values of Object.values(intervalTimeList)){
+        let cell = row.insertCell();
+        let text = document.createTextNode(Math.ceil(values/60));
+        cell.appendChild(text);
+        
+    }
+    
+    generateTableHead();
+    
+}
+
+function changeStation(value){
+    getTimetable(value);
+    generateTable();
+    
+}
+    
+    
+
 window.addEventListener('DOMContentLoaded', initialize);
+
