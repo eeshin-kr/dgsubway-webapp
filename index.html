@@ -2,8 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8">
-    
-    <title>대구 지하철 시간 확인</title>
+    <title>대구 지하철 시간 확인(2호선 베타)</title>
     <script src="js/core.js"></script>
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
     <script src="data/1호선.js"></script>
@@ -15,127 +14,131 @@
     <script src="data/2호선 일요일하선.js"></script>
     <script src="data/2호선 토요일하선.js"></script>
     <script src="data/2호선 평일하선.js"></script>
-    
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
+    <p>현재 상태 : <i id="statustext"> 위치 정보를 찾을 수 없습니다. </i></p>
     <p>현재 요일 : <i id="weekday"> </i> </p>
-    <p>현재 위치 <i id="current_position">알 수 없음</i></p>
     <label for="staction-select">역 선택:</label>
     <select id="staction-select" onchange="getTimetable(this.value)">
         <optgroup label="1호선">
-            <option>각산</option>
-            <option>교대</option>
-            <option>대곡(정부대구청사)</option>
-            <option>대구역</option>
-            <option>대구한의대병원</option>
-            <option>대명</option>
-            <option>동구청(큰고개)</option>
-            <option>동대구역</option>
-            <option>동촌(동촌유원지)</option>
-            <option>명덕(2.28민주운동기념회관)</option>
-            <option>반야월</option>
-            <option>반월당</option>
-            <option>방촌</option>
-            <option>부호(경일대·호산대)</option>
-            <option>상인</option>
-            <option>서부정류장(관문시장)</option>
             <option>설화명곡</option>
-            <option>송현</option>
-            <option>신기</option>
-            <option>신천(경북대입구)</option>
-            <option>아양교(대구국제공항입구)</option>
-            <option>안심(혁신도시·첨복단지)</option>
-            <option>안지랑</option>
-            <option>영대병원</option>
-            <option>용계</option>
-            <option>월배</option>
-            <option>월촌</option>
-            <option>율하</option>
-            <option>중앙로</option>
-            <option>진천</option>
-            <option>칠성시장</option>
-            <option>하양(대구가톨릭대)</option>
-            <option>해안</option>
-            <option>현충로</option>
             <option>화원</option>
+            <option>대곡(정부대구청사)</option>
+            <option>진천</option>
+            <option>월배</option>
+            <option>상인</option>
+            <option>월촌</option>
+            <option>송현</option>
+            <option>서부정류장(관문시장)</option>
+            <option>대명</option>
+            <option>안지랑</option>
+            <option>현충로</option>
+            <option>영대병원</option>
+            <option>명덕(2.28민주운동기념회관)</option>
+            <option>교대</option>
+            <option>반월당</option>
+            <option>중앙로</option>
+            <option>대구역</option>
+            <option>칠성시장</option>
+            <option>신천(경북대입구)</option>
+            <option>동대구역</option>
+            <option>동구청(큰고개)</option>
+            <option>아양교(대구국제공항입구)</option>
+            <option>동촌(동촌유원지)</option>
+            <option>해안</option>
+            <option>방촌</option>
+            <option>용계</option>
+            <option>율하</option>
+            <option>신기</option>
+            <option>반야월</option>
+            <option>각산</option>
+            <option>안심(혁신도시·첨복단지)</option>
+            <option>대구한의대병원</option>
+            <option>부호(경일대·호산대)</option>
+            <option>하양(대구가톨릭대)</option>
         </optgroup>
         <optgroup label="2호선">
-            <option>감삼</option>
-            <option>강창</option>
-            <option>경대병원</option>
-            <option>계명대</option>
-            <option>고산</option>
-            <option>내당</option>
-            <option>다사</option>
-            <option>담티(수성대·대륜)</option>
-            <option>대구은행(대구교육청)</option>
-            <option>대실</option>
-            <option>두류</option>
-            <option>만촌</option>
             <option>문양</option>
-            <option>반고개</option>
-            <option>반월당</option>
-            <option>범어</option>
-            <option>사월</option>
+            <option>다사</option>
+            <option>대실</option>
+            <option>강창</option>
+            <option>계명대</option>
             <option>성서산업단지</option>
-            <option>수성구청(KBS)</option>
-            <option>수성알파시티(삼성라이온즈파크)</option>
-            <option>신매</option>
-            <option>연호</option>
-            <option>영남대</option>
-            <option>용산(서부법원?검찰청입구)</option>
             <option>이곡</option>
-            <option>임당</option>
-            <option>정평</option>
             <option>죽전</option>
+            <option>용산(서부법원?검찰청입구)</option>
+            <option>감삼</option>
+            <option>두류</option>
+            <option>내당</option>
+            <option>반고개</option>
             <option>청라언덕</option>
+            <option>반월당</option>
+            <option>경대병원</option>
+            <option>대구은행(대구교육청)</option>
+            <option>범어</option>
+            <option>수성구청(KBS)</option>
+            <option>만촌</option>
+            <option>담티(수성대·대륜)</option>
+            <option>수성알파시티(삼성라이온즈파크)</option>
+            <option>연호</option>
+            <option>고산</option>
+            <option>신매</option>
+            <option>사월</option>
+            <option>정평</option>
+            <option>임당</option>
+            <option>영남대</option>
         </optgroup>
         <optgroup label="3호선">
-            <option>건들바위</option>
-            <option>공단</option>
-            <option>구암(과학대보건대입구)</option>
-            <option>남산(계명네거리)</option>
-            <option>달성공원</option>
-            <option>대봉교</option>
+            <option>칠곡경대병원</option>
+            <option>학정</option>
+            <option>팔거(국립농관원통계청)</option>
             <option>동천</option>
-            <option>만평</option>
+            <option>칠곡운암</option>
+            <option>구암(과학대보건대입구)</option>
+            <option>태전</option>
             <option>매천</option>
             <option>매천시장</option>
-            <option>명덕(2·28민주운동기념회관)</option>
-            <option>범물</option>
-            <option>북구청(DGB대구은행파크)</option>
-            <option>서문시장(동산병원)</option>
-            <option>수성구민운동장</option>
-            <option>수성못(TBC)</option>
-            <option>수성시장</option>
-            <option>어린이세상</option>
-            <option>용지</option>
-            <option>원대</option>
-            <option>지산</option>
-            <option>청라언덕(신남)</option>
-            <option>칠곡경대병원</option>
-            <option>칠곡운암</option>
-            <option>태전</option>
-            <option>팔거(국립농관원통계청)</option>
             <option>팔달</option>
+            <option>공단</option>
+            <option>만평</option>
+            <option>원대</option>
             <option>팔달시장</option>
-            <option>학정</option>
+            <option>북구청(DGB대구은행파크)</option>
+            <option>달성공원</option>
+            <option>서문시장(동산병원)</option>
+            <option>청라언덕(신남)</option>
+            <option>명덕(2·28민주운동기념회관)</option>
+            <option>남산(계명네거리)</option>
+            <option>건들바위</option>
+            <option>대봉교</option>
+            <option>수성시장</option>
+            <option>수성구민운동장</option>
+            <option>어린이세상</option>
             <option>황금</option>
+            <option>수성못(TBC)</option>
+            <option>지산</option>
+            <option>범물</option>
+            <option>용지</option>
         </optgroup>
     </select>
     
     <p>2번째로 가까운 역: <a id="second_station" href="#" onclick="changeStation(this)">오류</a> </p>
     <p>3번째로 가까운 역: <a id="third_station"  href="#" onclick="changeStation(this)">오류</a></p>
-    
-    <center>상선 / 하선 시간표</center>
-    <div class="container" style="display: flex; justify-content: space-around;">
-        <div id="uptrain">helloflex</div>
-        <div id="downtrain">abc</div>
+    <input id="autorefresh" type="checkbox" onchange="autoRefresh()"/>
+    <label for="autorefresh">자동 새로고침</label>
+    <center>시간표 <a href="#" onclick="refresh()">(새로고침)</a></center>
+    <div class="container">
+        <fieldset class="traintimetable">
+            <legend>상선</legend>
+            <div id="uptrain">상선 시간 표시</div>
+        </fieldset>
+        
+        <fieldset class="traintimetable">
+            <legend>하선</legend>
+            <div id="downtrain">하선 시간 표시</div>
+        </fieldset>
     </div>
     
-    
-
-
   </body>
 </html>

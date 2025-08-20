@@ -1,20 +1,24 @@
-var currentPosition = 0;
+var statustext = 0;
 var latitude = 0;
 var longitude = 0;
 var nearestStation = "";
+var timeMargin = 60; //60초 이전 도착시각 표시
+var refreshInterval = 1000;
+var timer = 0;
 
 
 function initialize() {
-  currentPosition = document.getElementById("current_position");
+  statustext = document.getElementById("statustext");
   changeDay();
   getLocation();
+  document.getElementById("autorefresh").checked = true;
+  autoRefresh();
 }
 
 function getLocation() {
     if (!navigator.geolocation){
-        currentPosition.innerHTML = "위치 기능이 현재 브라우저에서 동작하지 않습니다.";
+        statustext.innerHTML = "위치 기능이 현재 브라우저에서 동작하지 않습니다.";
     } else {
-        currentPosition.innerHTML = "위치 파악 중...";
         navigator.geolocation.getCurrentPosition(success, error);
     }
 }
@@ -22,15 +26,15 @@ function getLocation() {
 function success(position) {
     latitude = Number(position.coords.latitude);
     longitude = Number(position.coords.longitude);
-    currentPosition.innerHTML = "위도: " + latitude + " 경도: " + longitude;
-    
+
     getDistanceFromStations();
     printNearestStation();
+    statustext.innerHTML = "가장 가까운 역: " + nearestStation
     
 }
 
 function error(){
-    currentPosition.innerHTML = "위치 정보를 찾을 수 없습니다."
+    statustext.innerHTML = "위치 정보를 찾을 수 없습니다."
 }
 
 function getDistanceFromStations(){
@@ -108,6 +112,11 @@ function getTimetable(value){
    
     
     uptrainForm.innerHTML='';
+    var tempstr="0";
+    var scheduletime=[];
+    let today = new Date();
+    var nowtime = today.getHours() * 3600 + today.getMinutes() * 60 + today.getSeconds();
+    if (nowtime < 10*60) nowtime = nowtime + 24*3600; 
     for ( key in loadfileup){
         for ( key2 in loadfileup[key]){
             if (key2.substr(0, filtteredtext.length) == filtteredtext){
@@ -116,15 +125,30 @@ function getTimetable(value){
                     if (value == ""){
                         continue;
                     }
-                    var opt = document.createElement('option');
-                    opt.innerHTML=value;
-                    uptrainForm.appendChild(opt);
+                    
+                    let scheduleTimeArray = value.split(":").map(Number);
+                    scheduletime = Number(scheduleTimeArray[0]) * 3600 + scheduleTimeArray[1] * 60 + scheduleTimeArray[2];
+                    if (scheduletime < 10*60) scheduletime = scheduletime + 24*3600;
+
+                    if (scheduletime > (nowtime - timeMargin)){
+
+                        if (tempstr[0] == "0") {
+                            tempstr = "<b>" + value.slice(0,-3) + " << " + toMinutes(scheduletime-nowtime)  + "분 "+ + toleftSeconds(scheduletime-nowtime);
+                            tempstr = toleftSeconds(scheduletime-nowtime) >= 0?  tempstr + "초 남음" + "</b>" : tempstr + "초 초과" + "</b>" ;
+                        }
+                        else {
+                            tempstr = tempstr + "</br>" + value.slice(0,-3) + "   " + toMinutes(scheduletime - nowtime) + "분 남음" ;
+                        }
+                    }
                 }
             }
         
         }
     }
+    uptrainForm.innerHTML = tempstr;
+    
     downtrainForm.innerHTML='';
+    var tempstr="0";
     for ( key in loadfiledown){
         for ( key2 in loadfiledown[key]){
             if (key2.substr(0, filtteredtext.length) == filtteredtext){
@@ -132,15 +156,49 @@ function getTimetable(value){
                     value = loadfiledown[key][key2][key3];
                     if (value == ""){
                         continue;
+                    }let scheduleTimeArray = value.split(":").map(Number);
+                    scheduletime = Number(scheduleTimeArray[0]) * 3600 + scheduleTimeArray[1] * 60 + scheduleTimeArray[2];
+                    if (scheduletime < 10*60) scheduletime = scheduletime + 24*3600;
+
+                    if (scheduletime > (nowtime - timeMargin)){
+
+                        if (tempstr[0] == "0") {
+                            tempstr = "<b>" + value.slice(0,-3) + " << " + toMinutes(scheduletime-nowtime)  + "분 "+ + toleftSeconds(scheduletime-nowtime);
+                            tempstr = toleftSeconds(scheduletime-nowtime) >= 0?  tempstr + "초 남음" + "</b>" : tempstr + "초 초과" + "</b>" ;
+                            
+                        }
+                        else {
+                            tempstr = tempstr + "</br>" + value.slice(0,-3) + "   " + toMinutes(scheduletime - nowtime) + "분 남음" ;
+                        }
                     }
-                    var opt = document.createElement('option');
-                    opt.innerHTML=value;
-                    downtrainForm.appendChild(opt);
                 }
             }
         
         }
     }
+    downtrainForm.innerHTML = tempstr;
+}
+
+function refresh(){
+    getTimetable(document.getElementById("staction-select").value);
+}
+
+function autoRefresh(){
+    if (document.getElementById("autorefresh").checked){
+        timer = setInterval(refresh, refreshInterval);
+    }
+    else{
+        clearInterval(timer);
+    }
+    
+}
+
+function toMinutes(time){
+    return time >0 ?  Math.floor( time / 60) : "-";
+}
+
+function toleftSeconds(time){
+    return time >0 ? time - Math.floor( time / 60) * 60 : time;
 }
 
 window.addEventListener('DOMContentLoaded', initialize);

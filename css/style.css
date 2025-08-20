@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    height: 30vh;
+}
+
+.traintimetable {
+    text-align: center;
+    width: 100%;
+    overflow: auto;
+
+    
+}
+    
