@@ -283,12 +283,12 @@ function changeStation(value){
     
 }
 
-/* function changeDestination(){
+function changeDestination(){
     document.getElementById("uptrainlabel").innerHTML = Object.keys(line2upnormalday[0])[0];
     document.getElementById("downtrainlabel").innerHTML = Object.keys(line2upnormalday[line2upnormalday.length - 1])[0];
     
-} */
-/* 
+}
+
 function printDestinationTable(station){
     let timetable1 = document.getElementById("timetable1");
     let timetable2 = document.getElementById("timetable2");
@@ -397,7 +397,7 @@ function getDestinationETAlist(station){
     destinationtrainForm.innerHTML = tempstr;
     
 }
- */
+
 function secondToTimeString(second){
     return Math.floor(second/3600) + ":" + String(Math.floor( (second % 3600) / 60 )).padStart(2, "0") + ":" + String(Math.floor(second % 60)).padStart(2, "0");
     
