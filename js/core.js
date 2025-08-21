@@ -7,7 +7,7 @@ var refreshInterval = 1000;
 var timer = 0;
 var changeHTMLCode1 = "<a class=\"stationSelection\" href=\"#\" onclick=\"changeStationSelectionBox(this)\">";
 var changeHTMLCode2 = "</a>";
-var nearestStationQuantity = 5; //가장 가까운 역 표시 갯수
+var nearestStationQuantity = 3; //가장 가까운 역 표시 갯수
 var wantedStation = ""; //목적지 역 설정
 
 function initialize() {
@@ -283,12 +283,12 @@ function changeStation(value){
     
 }
 
-function changeDestination(){
+/* function changeDestination(){
     document.getElementById("uptrainlabel").innerHTML = Object.keys(line2upnormalday[0])[0];
     document.getElementById("downtrainlabel").innerHTML = Object.keys(line2upnormalday[line2upnormalday.length - 1])[0];
     
-}
-
+} */
+/* 
 function printDestinationTable(station){
     let timetable1 = document.getElementById("timetable1");
     let timetable2 = document.getElementById("timetable2");
@@ -296,14 +296,15 @@ function printDestinationTable(station){
     timetable1.style.display= "none";
     timetable2.style.display= "flex";
     
-    getDestinationETAlist(station);
     
     if (station == "선택"){
         timetable1.style.display= "flex";
         timetable2.style.display= "none";
         wantedStation = "";
+        return 0;
         
     }
+    getDestinationETAlist(station);
     
 }
 
@@ -396,7 +397,7 @@ function getDestinationETAlist(station){
     destinationtrainForm.innerHTML = tempstr;
     
 }
-
+ */
 function secondToTimeString(second){
     return Math.floor(second/3600) + ":" + String(Math.floor( (second % 3600) / 60 )).padStart(2, "0") + ":" + String(Math.floor(second % 60)).padStart(2, "0");
     
