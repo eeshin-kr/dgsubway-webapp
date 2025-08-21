@@ -5,7 +5,9 @@ var nearestStation = "";
 var timeMargin = 60; //60초 이전 도착시각 표시
 var refreshInterval = 1000;
 var timer = 0;
-
+var changeHTMLCode1 = "<a class=\"stationSelection\" href=\"#\" onclick=\"changeStationSelectionBox(this)\">";
+var changeHTMLCode2 = "</a>";
+var nearestStationQuantity = 5; //가장 가까운 역 표시 갯수
 
 function initialize() {
   statustext = document.getElementById("statustext");
@@ -29,8 +31,8 @@ function success(position) {
 
     getDistanceFromStations();
     printNearestStation();
-    statustext.innerHTML = "가장 가까운 역: " + nearestStation;
     generateTable();
+    changeDestination();
     
     
 }
@@ -58,7 +60,8 @@ function calculateDistance(lat_diff, longtitude_diff){
 
 function printNearestStation(){
     let temparray = [];
-    let selbox = document.getElementById("staction-select");
+    let tempstr = "";
+    let selbox = document.getElementById("station-select");
     
    temparray =  temparray.concat(line1pos,line2pos,line3pos);
         temparray.sort(function(a,b){
@@ -66,20 +69,18 @@ function printNearestStation(){
     });
     
     selbox.value = temparray[0]["역사명"];
-    nearestStation = temparray[0]["역사명"];
-    secondStation = document.getElementById("second_station");
-    thirdStation = document.getElementById("third_station");
     
-    secondStation.innerHTML = temparray[1]["역사명"];
-    thirdStation.innerHTML = temparray[2]["역사명"];
+    for (let i=0 ; i < nearestStationQuantity; i++){
+        tempstr = tempstr + changeHTMLCode1 + temparray[i]["역사명"] + changeHTMLCode2;
+    }
+    statustext.innerHTML = tempstr;
     
     getTimetable(nearestStation);
 }
 
 function changeStationSelectionBox(obj){
-    document.getElementById("staction-select").value = obj.innerHTML;
-    getTimetable(obj.innerHTML);
-
+    document.getElementById("station-select").value = obj.innerHTML;
+    changeStation(obj.innerHTML);
 }
 
 function changeDay(){
@@ -136,8 +137,9 @@ function getTimetable(value){
                     if (scheduletime > (nowtime - timeMargin)){
 
                         if (tempstr[0] == "0") {
-                            tempstr = "<b>" + value.slice(0,-3) + " << " + toMinutes(scheduletime-nowtime)  + "분 "+ + toleftSeconds(scheduletime-nowtime);
-                            tempstr = toleftSeconds(scheduletime-nowtime) >= 0?  tempstr + "초 남음" + "</b>" : tempstr + "초 초과" + "</b>" ;
+                            tempstr = "<span class=\"nowTrain\">" + value.slice(0,-3) + " " + toMinutes(scheduletime-nowtime)  + "분 "+ + toleftSeconds(scheduletime-nowtime);
+                            tempstr = toleftSeconds(scheduletime-nowtime) >= 0?  tempstr + "초 남음" :  tempstr + "초 초과" ;
+                            tempstr = tempstr + "</span>";
                         }
                         else {
                             tempstr = tempstr + "</br>" + value.slice(0,-3) + "   " + toMinutes(scheduletime - nowtime) + "분 남음" ;
@@ -166,9 +168,9 @@ function getTimetable(value){
                     if (scheduletime > (nowtime - timeMargin)){
 
                         if (tempstr[0] == "0") {
-                            tempstr = "<b>" + value.slice(0,-3) + " << " + toMinutes(scheduletime-nowtime)  + "분 "+ + toleftSeconds(scheduletime-nowtime);
-                            tempstr = toleftSeconds(scheduletime-nowtime) >= 0?  tempstr + "초 남음" + "</b>" : tempstr + "초 초과" + "</b>" ;
-                            
+                            tempstr = "<span class=\"nowTrain\">" + value.slice(0,-3) + " " + toMinutes(scheduletime-nowtime)  + "분 "+ + toleftSeconds(scheduletime-nowtime);
+                            tempstr = toleftSeconds(scheduletime-nowtime) >= 0?  tempstr + "초 남음" : tempstr + "초 초과" ;
+                            tempstr = tempstr + "</span>";
                         }
                         else {
                             tempstr = tempstr + "</br>" + value.slice(0,-3) + "   " + toMinutes(scheduletime - nowtime) + "분 남음" ;
@@ -183,10 +185,11 @@ function getTimetable(value){
 }
 
 function refreshTimeTable(){
-    getTimetable(document.getElementById("staction-select").value);
+    getTimetable(document.getElementById("station-select").value);
 }
 
 function autoRefresh(){
+    refreshTimeTable();
     if (document.getElementById("autorefresh").checked){
         timer = setInterval(refreshTimeTable, refreshInterval);
     }
@@ -207,7 +210,7 @@ function toleftSeconds(time){
 
 function getIntervaltimeList(){
     const regex = /\(.*\)/i;
-    const filtteredtext = document.getElementById("staction-select").value.replace(regex, "");
+    const filtteredtext = document.getElementById("station-select").value.replace(regex, "");
     let centerStation = filtteredtext;
     let stationArray = Object.keys(line2intervaltime);
     let timeArray = Object.values(line2intervaltime).map(function(el){
@@ -218,20 +221,6 @@ function getIntervaltimeList(){
     
     for (let i=0; i<stationArray.length; i++){
         tempList[stationArray[i]] = Math.abs(timeArray[stationArray.indexOf(centerStation)] - timeArray[i]);
-        
-/*         tempList[stationArray[i]] = 0;
-
-        if (i < stationArray.indexOf(centerStation)){
-            for (let j=i+1; j <= stationArray.indexOf(centerStation); j++ ){
-                tempList[stationArray[i]] = tempList[stationArray[i]] + timeArray[j];
-            }
-        } else if(i > stationArray.indexOf(centerStation)) {
-            for (let j=stationArray.indexOf(centerStation)+1; j <= i; j++ ){
-                tempList[stationArray[i]] = tempList[stationArray[i]] + timeArray[j];
-            }
-
-        } */
-
     }
 
     return tempList;
@@ -271,10 +260,20 @@ function generateTable(){
 function changeStation(value){
     getTimetable(value);
     generateTable();
+    changeDestination();
     
 }
+
+function changeDestination(){
+    document.getElementById("uptrainlabel").innerHTML = Object.keys(line2upnormalday[0])[0];
+    document.getElementById("downtrainlabel").innerHTML = Object.keys(line2upnormalday[line2upnormalday.length - 1])[0];
+    
+}
+
+function getDestinationETA(){
     
     
+}
 
 window.addEventListener('DOMContentLoaded', initialize);
 

@@ -31,7 +31,40 @@ body, html{
     overflow: auto;
 }
 
+.overflowx{
+    overflow: auto;
+    width: 100%;
+}
+
+.stationSelection:before{
+    content: "『";
+    
+}
+
+.stationSelection:after{
+    content: "』";
+    
+}
+
 #time_between_station{
     white-space: nowrap;
     table-layout: fixed;    
+}
+
+.destinationlabel:before{
+    content: "(";
+}
+
+.destinationlabel:after{
+    content: " 방면)";
+}
+
+.nowTrain:before{
+    content: "❤️";
+}
+
+.nowTrain{
+    font-weight: bold;
+    
+    
 }

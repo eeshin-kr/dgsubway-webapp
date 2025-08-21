@@ -18,10 +18,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <p>현재 상태 : <i id="statustext"> 위치 정보를 찾을 수 없습니다. </i></p>
-    <p>현재 요일 : <i id="weekday"> </i> </p>
-    <label for="staction-select">역 선택:</label>
-    <select id="staction-select" onchange="changeStation(this.value)">
+    <div class="overflowx">인근 역 선택: <span id="statustext"> 위치 정보를 찾을 수 없습니다. </span></div>
+    <p>현재 요일 : <span id="weekday"> </span> </p>
+    <label for="station-select">현재 역:</label>
+    <select id="station-select" onchange="changeStation(this.value)">
         <optgroup label="1호선">
             <option>설화명곡</option>
             <option>화원</option>
@@ -124,24 +124,26 @@
         </optgroup>
     </select>
     
-    <p>2번째로 가까운 역: <a id="second_station" href="#" onclick="changeStationSelectionBox(this)">오류</a> </p>
-    <p>3번째로 가까운 역: <a id="third_station"  href="#" onclick="changeStationSelectionBox(this)">오류</a></p>
-    <input id="autorefresh" type="checkbox" onchange="autoRefresh()"/>
-    <label for="autorefresh">자동 새로고침</label>
+
     <div class="container">
-        <div>역간 이동 시간 (분)</div>
+        <div>역 간 이동 시간(분) </br><sup>좌우 스크롤 가능</sup></div>
         <div class="tablewrapper">
         <table id="time_between_station"></table>
         </div>
     </div>
-    <center><div>시간표 <a href="#" onclick="refreshTimeTable()">(새로고침)</a></div></center>
+    <center><div>시간표</div>
+    <sup>
+    <input id="autorefresh" type="checkbox" onchange="autoRefresh()"/>
+    <label for="autorefresh">자동 새로고침 활성화</label>
+    </center>
+    </sup>
     <div class="container_col">
                     <fieldset class="traintimetable">
-                        <legend>상선</legend>
+                        <legend>상선<span id="uptrainlabel" class="destinationlabel">ㅇㅇ</span></legend>
                         <div id="uptrain">상선 시간 표시</div>
                     </fieldset>
                     <fieldset class="traintimetable">
-                        <legend>하선</legend>
+                        <legend>하선<span id="downtrainlabel" class="destinationlabel">ㅇㅇ</span></legend>
                         <div id="downtrain">하선 시간 표시</div>
                     </fieldset>
                 
