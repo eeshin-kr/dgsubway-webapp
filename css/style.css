@@ -73,3 +73,20 @@ body, html{
     display: none;
     
 }
+
+.partialarrive:before{
+    content: "(";
+    
+}
+
+.partialarrive:after{
+    content: ")";
+    
+}
+
+.partialarrive{
+    
+    font-weight: bold;
+    color: purple;
+    
+}

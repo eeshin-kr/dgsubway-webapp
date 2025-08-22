@@ -97,6 +97,9 @@ function changeDay(){
 }
 
 function getTimetable(value){
+    if (wantedStation != "") return 0;
+    
+    
     const regex = /\(.*\)/i;
     const filtteredtext = value.replace(regex, "");
     let uptrainForm = document.getElementById("uptrain");
@@ -137,7 +140,8 @@ function getTimetable(value){
                     if (scheduletime < 10*60) scheduletime = scheduletime + 24*3600;
 
                     if (scheduletime > (nowtime - timeMargin)){
-                        tempstr = tempstr + value.slice(0,-3);
+                        tempstr = tempstr + value.split(":")[0] + ":" + value.split(":")[1] ;
+                        if (value.split(":").length > 3 ) tempstr = tempstr + "<span class=\"partialarrive\">" + value.split(":")[value.split(":").length-1] + "</span>" ;
                         tempstr = tempstr + " -->  " + toMinutes(scheduletime-nowtime) + "분  ";
 
                         
@@ -177,7 +181,8 @@ function getTimetable(value){
                     if (scheduletime < 10*60) scheduletime = scheduletime + 24*3600;
 
                     if (scheduletime > (nowtime - timeMargin)){
-                        tempstr = tempstr + value.slice(0,-3);
+                        tempstr = tempstr + value.split(":")[0] + ":" + value.split(":")[1] ;
+                        if (value.split(":").length > 3 ) tempstr = tempstr + "<span class=\"partialarrive\">" + value.split(":")[value.split(":").length-1] + "</span>" ;
                         tempstr = tempstr + " -->  " + toMinutes(scheduletime-nowtime) + "분  ";
 
                         
@@ -277,7 +282,8 @@ function generateTable(){
 }
 
 function changeStation(value){
-    getTimetable(value);
+    refreshTimeTable();
+    //getTimetable(value);
     generateTable();
     changeDestination();
     
@@ -366,13 +372,34 @@ function getDestinationETAlist(station){
                     if (value == ""){
                         continue;
                     }
+                    if (updownkind == "상선" && line2paup.includes(filtteredtext)){
+                        if (stationArray.indexOf(line2padestinationup) > stationArray.indexOf(wantedStation)){
+                            if (value.includes(line2padestinationup)){
+                                break;
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    if (updownkind == "하선" && line2padown.includes(filtteredtext)){
+                        if (stationArray.indexOf(line2padestinationdown) < stationArray.indexOf(wantedStation)){
+                            if (value.includes(line2padestinationdown)){
+                                break;
+                            }
+                            
+                        }
+                        
+                    }
                     
                     let scheduleTimeArray = value.split(":").map(Number);
                     scheduletime = Number(scheduleTimeArray[0]) * 3600 + scheduleTimeArray[1] * 60 + scheduleTimeArray[2];
                     if (scheduletime < 10*60) scheduletime = scheduletime + 24*3600;
 
                     if (scheduletime > (nowtime - timeMargin)){
-                            tempstr = tempstr + value.slice(0,-3) + " 출발 >> ";
+                            tempstr = tempstr + value.split(":")[0] + ":" + value.split(":")[1] ;
+                            if (value.split(":").length > 3 ) tempstr = tempstr + "<span class=\"partialarrive\">" + value.split(":")[value.split(":").length-1] + "</span>" ;
+                            tempstr = tempstr + " 출발 >> ";
                             tempstr = tempstr + secondToTimeString(scheduletime + estimatedtime).slice(0,-3) + " 도착 ";
                             tempstr = tempstr + " -->  ";
                             tempstr = tempstr + toMinutes(scheduletime-nowtime)  + "분 ";
@@ -400,7 +427,19 @@ function getDestinationETAlist(station){
 
 function secondToTimeString(second){
     return Math.floor(second/3600) + ":" + String(Math.floor( (second % 3600) / 60 )).padStart(2, "0") + ":" + String(Math.floor(second % 60)).padStart(2, "0");
-    
+}
+
+function swapStation(){
+    if (document.getElementById("station-select-2").value != "선택"){
+        let tempval1 = document.getElementById("station-select").value;
+        let tempval2 = document.getElementById("station-select-2").value;
+        
+        document.getElementById("station-select").value = tempval2;
+        document.getElementById("station-select-2").value = tempval1;
+        changeStation(tempval2);
+        printDestinationTable(tempval1);
+        
+    }
 }
 
 window.addEventListener('DOMContentLoaded', initialize);
