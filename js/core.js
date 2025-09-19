@@ -87,12 +87,15 @@ function changeStationSelectionBox(obj){
 
 function changeDay(){
     let today = new Date();
-    if (today.getDay() == 0 ){
-        document.getElementById("weekday").innerHTML = "일요일";
+    let todaystr  = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,'0')}-${today.getDate().toString().padStart(2,'0')}`
+    const holidaylist=[...Object.keys(holiday2025), Object.keys(holiday2026)];
+    
+    if (today.getDay() == 0 | holidaylist.includes(todaystr) ){
+        document.getElementById("weekday").value = "일요일";
     } else if (today.getDay() == 6){
-        document.getElementById("weekday").innerHTML = "토요일";
+        document.getElementById("weekday").value = "토요일";
     } else {
-        document.getElementById("weekday").innerHTML = "평일";
+        document.getElementById("weekday").value = "평일";
     }
 }
 
@@ -108,10 +111,10 @@ function getTimetable(value){
     var loadfileup;
     var loadfiledown;
     
-    if (weekdaySelection.innerHTML == "일요일"){
+    if (weekdaySelection.value == "일요일"){
         loadfileup = line2upsunday;
         loadfiledown = line2downsunday;
-    } else if (weekdaySelection.innerHTML == "토요일"){
+    } else if (weekdaySelection.value == "토요일"){
         loadfileup = line2upsatureday;
         loadfiledown = line2downsatureday;
     } else {
@@ -303,7 +306,7 @@ function printDestinationTable(station){
     timetable2.style.display= "flex";
     
     
-    if (station == "선택"){
+    if (station == "미선택"){
         timetable1.style.display= "flex";
         timetable2.style.display= "none";
         wantedStation = "";
@@ -347,9 +350,9 @@ function getDestinationETAlist(station){
     document.getElementById("destinationStation").innerHTML = wantedStation;
     
     //불러올 파일 선택
-    if (weekdaySelection.innerHTML == "일요일"){
+    if (weekdaySelection.value == "일요일"){
         loadfile = updownkind == "상선"? line2upsunday : line2downsunday
-    } else if (weekdaySelection.innerHTML == "토요일"){
+    } else if (weekdaySelection.value == "토요일"){
         loadfile = updownkind == "상선"? line2upsatureday : line2downsatureday
     } else {
         loadfile = updownkind == "상선"? line2upnormalday : line2downnormalday
@@ -430,7 +433,7 @@ function secondToTimeString(second){
 }
 
 function swapStation(){
-    if (document.getElementById("station-select-2").value != "선택"){
+    if (document.getElementById("station-select-2").value != "미선택"){
         let tempval1 = document.getElementById("station-select").value;
         let tempval2 = document.getElementById("station-select-2").value;
         

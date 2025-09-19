@@ -16,6 +16,8 @@
     <script src="data/2호선 평일하선.js"></script>
     <script src="data/2호선 소요시간.js"></script>
     <script src="data/2호선 비완행열차.js"></script>
+    <script src="data/2025휴일.js"></script>
+    <script src="data/2026휴일.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" sizes="16x16"  href="./favicons/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32"  href="./favicons/favicon-32x32.png">
@@ -35,7 +37,13 @@
   </head>
   <body>
     <div class="overflowx">인근 역 선택: <span id="statustext"> 위치 정보를 찾을 수 없습니다. </span></div>
-    <p>현재 요일 : <span id="weekday"> </span> </p>
+    <label for="weekday">현재 요일 :</label>
+    <select id="weekday" onchange="autoRefresh()">
+        <option value="평일">평일</option>
+        <option value="토요일">토요일</option>
+        <option value="일요일">일요일/휴일</option>
+    </select>
+    <br/>
     <label for="station-select">현재 역:</label>
     <select id="station-select" onchange="changeStation(this.value)">
         <optgroup label="2호선">
@@ -73,7 +81,7 @@
     <p></p>
     <label for="station-select-2">도착 역:</label>
     <select id="station-select-2" onchange="printDestinationTable(this.value)">
-    <option>선택</option>
+    <option value="미선택">미선택</option>
     <optgroup label="2호선">
         <option>문양</option>
         <option>다사</option>
